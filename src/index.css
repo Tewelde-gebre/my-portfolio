@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #8b5cf6;
+    /* Violet 500 */
+    --color-secondary: #3b82f6;
+    /* Blue 500 */
+    --color-dark-bg: #0f172a;
+    /* Slate 900 */
+    --color-card-bg: rgba(30, 41, 59, 0.7);
+    /* Slate 800 with opacity */
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+    body {
+        @apply bg-white text-gray-900 font-sans antialiased selection:bg-purple-500 selection:text-white;
+        background-image:
+            radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 25%),
+            radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 25%);
+        background-attachment: fixed;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-bold tracking-tight;
+    }
+}
+
+@layer components {
+
+    /* Glassmorphism Utilities */
+    .glass-card {
+        @apply bg-white/60 backdrop-blur-xl border border-gray-200/50 shadow-xl rounded-xl;
+    }
+
+    .glass-panel {
+        @apply bg-white/70 backdrop-blur-lg border-t border-gray-200/50 shadow-lg;
+    }
+
+    /* Text Gradients */
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        @apply px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-lg font-medium transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-500/25 transform hover:-translate-y-0.5;
+    }
+
+    .btn-secondary {
+        @apply px-6 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md;
+    }
+
+    /* Section Containers */
+    .section-container {
+        @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20;
+    }
+
+    .section-title {
+        @apply text-3xl md:text-4xl font-bold mb-12 text-gray-900;
+    }
+}
