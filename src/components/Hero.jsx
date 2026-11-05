@@ -1,136 +1,337 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { FaGithub, FaLinkedin, FaTelegram, FaCamera, FaCloudUploadAlt } from "react-icons/fa";
-import { useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { FaGithub, FaLinkedin, FaTelegram, FaCamera, FaCloudUploadAlt, FaArrowRight, FaDownload } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi2";
+
+const TYPING_WORDS = ["MERN Stack Developer", "Full Stack Engineer", "React.js Expert", "Node.js Developer"];
 
 const Hero = ({ profileImage, onImageUpdate }) => {
     const fileInputRef = useRef(null);
+    const [typedText, setTypedText] = useState("");
+    const [wordIndex, setWordIndex] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
+    // Typing animation
+    useEffect(() => {
+        const currentWord = TYPING_WORDS[wordIndex];
+        let timeout;
+
+        if (isPaused) {
+            timeout = setTimeout(() => {
+                setIsPaused(false);
+                setIsDeleting(true);
+            }, 2000);
+        } else if (isDeleting) {
+            if (typedText.length === 0) {
+                setIsDeleting(false);
+                setWordIndex((prev) => (prev + 1) % TYPING_WORDS.length);
+            } else {
+                timeout = setTimeout(() => setTypedText((t) => t.slice(0, -1)), 50);
+            }
+        } else {
+            if (typedText.length === currentWord.length) {
+                setIsPaused(true);
+            } else {
+                timeout = setTimeout(
+                    () => setTypedText(currentWord.slice(0, typedText.length + 1)),
+                    80
+                );
+            }
+        }
+
+        return () => clearTimeout(timeout);
+    }, [typedText, isDeleting, isPaused, wordIndex]);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                onImageUpdate(reader.result);
-            };
+            reader.onloadend = () => onImageUpdate(reader.result);
             reader.readAsDataURL(file);
         }
     };
 
+    const socials = [
+        { icon: <FaGithub size={18} />, href: "https://github.com/Tewelde-gebre", label: "GitHub" },
+        { icon: <FaLinkedin size={18} />, href: "#", label: "LinkedIn" },
+        { icon: <FaTelegram size={18} />, href: "#", label: "Telegram" },
+    ];
+
+    const stats = [
+        { value: "2+", label: "Years Coding" },
+        { value: "10+", label: "Projects Built" },
+        { value: "∞", label: "Lines of Code" },
+    ];
+
     return (
         <section
             id="home"
-            className="min-h-screen flex items-center justify-center relative overflow-hidden pt-28 pb-20 px-4 sm:px-6 lg:px-8"
+            className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 px-4 sm:px-6 lg:px-8"
         >
-            {/* Background decoration */}
-            <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-purple-100 via-blue-50 to-transparent pointer-events-none"></div>
-            <div className="absolute top-10 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+            {/* Background Orbs */}
+            <div
+                className="orb w-[600px] h-[600px] top-[-10%] left-[-10%] opacity-30"
+                style={{ background: "radial-gradient(circle, #a855f7 0%, transparent 70%)" }}
+            />
+            <div
+                className="orb w-[500px] h-[500px] bottom-[-10%] right-[-10%] opacity-20"
+                style={{ background: "radial-gradient(circle, #6366f1 0%, transparent 70%)", animationDelay: "-4s" }}
+            />
+            <div
+                className="orb w-[300px] h-[300px] top-[40%] right-[20%] opacity-15"
+                style={{ background: "radial-gradient(circle, #ec4899 0%, transparent 70%)", animationDelay: "-2s" }}
+            />
 
-            <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            {/* Grid Background */}
+            <div className="absolute inset-0 grid-bg opacity-100 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-zinc-950 pointer-events-none" />
 
-                {/* Text Content - Left Side */}
-                <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center lg:text-left space-y-6 order-2 lg:order-1"
-                >
-                    <div className="inline-block px-4 py-1.5 rounded-full border border-purple-200 bg-purple-50 backdrop-blur-sm text-purple-700 text-sm font-medium">
-                        Welcome to my creative space
-                    </div>
+            {/* Main Content */}
+            <div className="relative z-10 w-full max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-gray-900 tracking-tight leading-tight">
-                        Hi, I'm <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500">Tewelde Gebre</span>
-                    </h1>
-
-                    <h2 className="text-xl md:text-2xl font-medium text-gray-600">
-                        Full Stack Developer | Django + React | <span className="text-blue-600">AI Integration</span>
-                    </h2>
-
-                    <p className="text-gray-600 max-w-xl mx-auto lg:mx-0 text-lg leading-relaxed">
-                        I craft high-performance web applications and intelligent systems.
-                        Currently studying Software Engineering at Mekelle University.
-                    </p>
-
-                    <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-                        <Link
-                            to="/projects"
-                            className="btn-primary"
+                    {/* ─── Left: Text Content ─── */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -40 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-center lg:text-left space-y-8 order-2 lg:order-1"
+                    >
+                        {/* Status Badge */}
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.6 }}
+                            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-semibold"
                         >
-                            View Projects
-                        </Link>
-                        <a
-                            href="/cv.pdf"
-                            download
-                            className="btn-secondary cursor-pointer flex items-center gap-2"
-                        >
-                            Download CV
-                        </a>
+                            <span className="relative flex h-2.5 w-2.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+                            </span>
+                            Available for new projects
+                        </motion.div>
 
-                        <div className="flex items-center gap-3 ml-2">
-                            <a href="https://github.com/Tewelde-gebre" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all backdrop-blur-sm border border-gray-200"><FaGithub size={20} /></a>
-                            <a href="#" className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all backdrop-blur-sm border border-gray-200"><FaLinkedin size={20} /></a>
-                            <a href="#" className="p-3 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all backdrop-blur-sm border border-gray-200"><FaTelegram size={20} /></a>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Image Content - Right Side */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="relative flex justify-center order-1 lg:order-2"
-                >
-                    <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96">
-                        {/* Glowing Ring 1 */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 blur-2xl opacity-40 animate-pulse"></div>
-                        {/* Glowing Ring 2 */}
-                        <div className="absolute -inset-4 rounded-full border border-white/10 border-t-purple-500/50 border-r-blue-500/50 spin-slow"></div>
-
-                        {/* Main Image Container */}
-                        <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-2xl group">
-                            {profileImage ? (
-                                <img
-                                    src={profileImage}
-                                    alt="Profile"
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 flex-col gap-2">
-                                    <FaCamera size={40} />
-                                    <span className="text-sm">No Image</span>
-                                </div>
-                            )}
-
-                            {/* Hover Upload Overlay */}
-                            <div
-                                onClick={() => fileInputRef.current.click()}
-                                className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer backdrop-blur-sm"
+                        {/* Heading */}
+                        <div>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.3 }}
+                                className="text-zinc-500 text-sm font-mono font-medium tracking-[0.15em] uppercase mb-3"
                             >
-                                <FaCloudUploadAlt size={40} className="text-white mb-2" />
-                                <span className="text-white font-medium">Upload Photo</span>
-                            </div>
+                                Hi there, I'm
+                            </motion.p>
+                            <motion.h1
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.35, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                                className="text-5xl md:text-6xl xl:text-7xl font-heading font-extrabold text-white leading-[1.05] tracking-tight"
+                            >
+                                Tewelde
+                                <br />
+                                <span className="text-gradient">Gebre</span>
+                            </motion.h1>
                         </div>
 
-                        {/* Floating Upload Button (visible on mobile too) */}
-                        <button
-                            onClick={() => fileInputRef.current.click()}
-                            className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-white/80 backdrop-blur-md p-3 rounded-full text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors shadow-lg lg:hidden"
+                        {/* Typing Animation */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="flex items-center justify-center lg:justify-start gap-2 text-xl md:text-2xl font-medium text-zinc-300"
                         >
-                            <FaCamera size={20} />
-                        </button>
+                            <HiSparkles className="text-purple-400 flex-shrink-0" size={20} />
+                            <span>
+                                {typedText}
+                                <span className="cursor-blink" />
+                            </span>
+                        </motion.div>
 
-                        <input
-                            type="file"
-                            accept="image/*"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
+                        {/* Description */}
+                        <motion.p
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            className="text-zinc-400 text-lg leading-relaxed max-w-lg mx-auto lg:mx-0"
+                        >
+                            I build end-to-end web applications using the{" "}
+                            <span className="text-purple-400 font-semibold">MERN Stack</span>{" "}
+                            — MongoDB, Express, React &amp; Node.js. Software Engineering student at{" "}
+                            <span className="text-purple-400 font-semibold">Mekelle University</span>,
+                            crafting fast, scalable, and beautiful full-stack experiences.
+                        </motion.p>
+
+                        {/* CTA Buttons */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.7 }}
+                            className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+                        >
+                            <a
+                                href="#projects"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+                                }}
+                                className="btn-primary group"
+                            >
+                                <span>View My Work</span>
+                                <FaArrowRight className="group-hover:translate-x-1 transition-transform" size={14} />
+                            </a>
+                            <a
+                                href="/cv.pdf"
+                                download
+                                className="btn-secondary"
+                            >
+                                <FaDownload size={14} />
+                                Download CV
+                            </a>
+                        </motion.div>
+
+                        {/* Social Links */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                            className="flex items-center justify-center lg:justify-start gap-3"
+                        >
+                            {socials.map((s) => (
+                                <a
+                                    key={s.label}
+                                    href={s.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={s.label}
+                                    className="w-10 h-10 rounded-xl flex items-center justify-center text-zinc-500 bg-white/[0.04] border border-white/[0.08] hover:text-purple-400 hover:border-purple-500/40 hover:bg-purple-500/10 transition-all duration-300"
+                                >
+                                    {s.icon}
+                                </a>
+                            ))}
+                            <div className="h-px w-12 bg-white/10 mx-1" />
+                            <span className="text-zinc-600 text-xs font-mono">@Tewelde-gebre</span>
+                        </motion.div>
+
+                        {/* Stats */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9 }}
+                            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-8 pt-4 border-t border-white/[0.06]"
+                        >
+                            {stats.map((stat) => (
+                                <div key={stat.label} className="text-center lg:text-left">
+                                    <p className="text-2xl font-heading font-bold text-white">{stat.value}</p>
+                                    <p className="text-xs text-zinc-500 font-medium">{stat.label}</p>
+                                </div>
+                            ))}
+                        </motion.div>
+                    </motion.div>
+
+                    {/* ─── Right: Profile Image ─── */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                        className="relative flex justify-center order-1 lg:order-2"
+                    >
+                        {/* Outer Glow Ring */}
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 blur-3xl opacity-20 scale-95 float-anim" />
+
+                        {/* Image Container */}
+                        <div className="relative w-72 h-72 md:w-[26rem] md:h-[26rem]">
+                            {/* Rotating Ring */}
+                            <div
+                                className="absolute -inset-4 rounded-full border border-dashed border-purple-500/20"
+                                style={{ animation: "spin 30s linear infinite" }}
+                            />
+                            <div
+                                className="absolute -inset-8 rounded-full border border-dashed border-indigo-500/10"
+                                style={{ animation: "spin 50s linear infinite reverse" }}
+                            />
+
+                            {/* Profile Card */}
+                            <div
+                                className="relative w-full h-full rounded-3xl overflow-hidden border border-white/10 group cursor-pointer shadow-2xl shadow-purple-900/20"
+                                onClick={() => fileInputRef.current.click()}
+                            >
+                                {/* Background gradient for empty state */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-violet-900/20 to-indigo-900/40" />
+
+                                {profileImage ? (
+                                    <img
+                                        src={profileImage}
+                                        alt="Tewelde Gebre"
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 relative">
+                                        <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                                            <FaCamera size={36} className="text-zinc-600" />
+                                        </div>
+                                        <p className="text-zinc-500 text-sm font-medium">Click to add photo</p>
+                                    </div>
+                                )}
+
+                                {/* Upload Overlay */}
+                                <div className="absolute inset-0 bg-zinc-950/70 backdrop-blur-sm flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                    <FaCloudUploadAlt size={40} className="text-purple-400" />
+                                    <span className="text-white font-semibold text-sm">Upload Photo</span>
+                                </div>
+                            </div>
+
+                            {/* Floating Badge: Experience */}
+                            <motion.div
+                                animate={{ y: [0, -12, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="absolute -top-6 -right-2 md:-right-8 glass-card-nohover px-4 py-3 shadow-xl z-20 hidden md:block"
+                            >
+                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-0.5">Stack</p>
+                                <p className="text-sm font-bold text-white font-heading">MERN Stack</p>
+                            </motion.div>
+
+                            {/* Floating Badge: University */}
+                            <motion.div
+                                animate={{ y: [0, 12, 0] }}
+                                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                                className="absolute -bottom-6 -left-2 md:-left-8 glass-card-nohover px-4 py-3 shadow-xl z-20 hidden md:block"
+                            >
+                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-0.5">University</p>
+                                <p className="text-sm font-bold text-white font-heading">Mekelle Univ.</p>
+                            </motion.div>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Scroll Indicator */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5 }}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
+                    onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
+                >
+                    <span className="text-zinc-600 text-xs font-mono tracking-widest uppercase">Scroll</span>
+                    <div className="w-5 h-9 rounded-full border border-white/10 flex items-start justify-center p-1.5">
+                        <motion.div
+                            animate={{ y: [0, 14, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                            className="w-1.5 h-1.5 rounded-full bg-purple-500"
                         />
                     </div>
                 </motion.div>
             </div>
+
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </section>
     );
 };

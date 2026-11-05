@@ -1,124 +1,203 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes } from "react-icons/fa";
+import MagneticWrapper from "./MagneticWrapper";
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeProvider";
+
+const navLinks = [
+    { name: "Home",       href: "#home" },
+    { name: "About",      href: "#about" },
+    { name: "Projects",   href: "#projects" },
+    { name: "Skills",     href: "#skills" },
+    { name: "Experience", href: "#experience" },
+    { name: "Contact",    href: "#contact" },
+];
 
 const Navbar = ({ profileImage }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            setScrolled(window.scrollY > 30);
+
+            // Detect active section by scroll position
+            const sections = navLinks.map(l => l.href.slice(1));
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sections[i]);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 120) {
+                        setActiveSection(sections[i]);
+                        break;
+                    }
+                }
+            }
         };
-        window.addEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const location = useLocation();
-
-    const navLinks = [
-        { name: "Home", to: "/" },
-        { name: "About", to: "/about" },
-        { name: "Projects", to: "/projects" },
-        { name: "Skills", to: "/skills" },
-        { name: "Experience", to: "/experience" },
-        { name: "Contact", to: "/contact" },
-    ];
+    const handleNavClick = (href) => {
+        setIsOpen(false);
+        const el = document.getElementById(href.slice(1));
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+    };
 
     return (
         <>
-            <nav
-                className={`fixed w-full z-50 transition-all duration-300 ${scrolled
-                    ? "bg-white/80 backdrop-blur-md border-b border-gray-200 py-3"
-                    : "bg-transparent py-5"
-                    }`}
+            <motion.nav
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+                    scrolled
+                        ? "py-3 bg-zinc-950/80 backdrop-blur-2xl border-b border-white/5 shadow-xl shadow-black/40"
+                        : "py-5 bg-transparent"
+                }`}
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between">
-                        {/* Brand Section */}
-                        <div className="flex-shrink-0 flex items-center gap-3">
-                            <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-                                <div className="w-10 h-10 rounded-full border-2 border-white/10 overflow-hidden shadow-lg group-hover:border-purple-500 transition-colors duration-300">
-                                    {profileImage ? (
-                                        <img
-                                            src={profileImage}
-                                            alt="Logo"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold">
-                                            Tewelde
-                                        </div>
-                                    )}
+                <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+                    {/* Brand */}
+                    <a
+                        href="#home"
+                        onClick={(e) => { e.preventDefault(); handleNavClick("#home"); }}
+                        className="flex items-center gap-3 group cursor-pointer"
+                    >
+                        <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-lg group-hover:border-purple-500/50 transition-all duration-300 flex-shrink-0">
+                            {profileImage ? (
+                                <img src={profileImage} alt="TG" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-purple-600 via-violet-600 to-indigo-600 flex items-center justify-center text-white text-sm font-bold font-heading">
+                                    TG
                                 </div>
-                                <span className="text-lg font-bold tracking-wide text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300">
-
-                                </span>
-                            </Link>
+                            )}
+                            <div className="absolute inset-0 bg-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
-
-                        {/* Desktop Navigation - Pill Style */}
-                        <div className="hidden md:block">
-                            <div className="flex items-center space-x-1 bg-white/50 backdrop-blur-lg px-2 py-1.5 rounded-full border border-gray-200">
-                                {navLinks.map((link) => (
-                                    <Link
-                                        key={link.name}
-                                        to={link.to}
-                                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer ${
-                                            location.pathname === link.to
-                                                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md"
-                                                : "text-gray-600 hover:text-gray-900"
+                        <span className="hidden sm:block text-lg font-heading font-bold text-white/90 tracking-tight group-hover:text-purple-300 transition-colors">
+                            Tewelde<span className="text-purple-400">.</span>
+                        </span>
+                    </a>
+                    {/* Theme toggle button */}
+                    <button onClick={toggleTheme} className="ml-4 p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-colors">
+                      {theme === "light" ? "🌙" : "☀️"}
+                    </button>
+                    
+                    {/* Desktop Nav */}
+                    <div className="hidden md:flex items-center gap-6 bg-white/[0.03] border border-white/[0.06] rounded-full px-4 py-2 backdrop-blur-md shadow-lg shadow-black/20">
+                        {navLinks.map((link) => {
+                            const isActive = activeSection === link.href.slice(1);
+                            return (
+                                <MagneticWrapper key={link.name}>
+                                    <a
+                                        href={link.href}
+                                        onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                                        className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer flex items-center justify-center ${
+                                            isActive
+                                                ? "text-white nav-active shadow-md shadow-purple-500/20"
+                                                : "text-zinc-400 hover:text-white hover:bg-white/10"
                                         }`}
                                     >
-                                        {link.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
+                                        <span className="relative z-10">{link.name}</span>
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="nav-indicator"
+                                                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/30"
+                                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                            />
+                                        )}
+                                    </a>
+                                </MagneticWrapper>
+                            );
+                        })}
+                    </div>
 
-                        {/* Mobile Menu Button */}
-                        <div className="flex md:hidden">
-                            <button
-                                onClick={() => setIsOpen(!isOpen)}
-                                className="p-2 rounded-lg text-gray-900 bg-gray-100 hover:bg-gray-200 transition-all border border-gray-200 shadow-sm"
-                                aria-label="Toggle Menu"
+                    {/* CTA + Mobile Toggle */}
+                    <div className="flex items-center gap-3">
+                        <MagneticWrapper>
+                            <a
+                                href="#contact"
+                                onClick={(e) => { e.preventDefault(); handleNavClick("#contact"); }}
+                                className="hidden md:inline-flex btn-primary text-sm py-2.5 px-6 rounded-full font-bold shadow-lg shadow-purple-500/25 border border-purple-400/30 hover:shadow-purple-500/40"
                             >
-                                {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-                            </button>
-                        </div>
+                                <span>Let's Talk</span>
+                            </a>
+                        </MagneticWrapper>
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="md:hidden p-2.5 rounded-xl text-zinc-300 bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                            aria-label="Toggle Menu"
+                        >
+                            <AnimatePresence mode="wait">
+                                {isOpen ? (
+                                    <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                                        <FaTimes size={18} />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                                        <FaBars size={18} />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </button>
                     </div>
                 </div>
-            </nav>
+            </motion.nav>
 
-            {/* Mobile Menu Overlay */}
+            {/* Mobile Menu */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: "100%" }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: "100%" }}
-                        transition={{ type: "tween", duration: 0.3 }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                         className="fixed inset-0 z-40 md:hidden"
+                        onClick={() => setIsOpen(false)}
                     >
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsOpen(false)}></div>
+                        <div className="absolute inset-0 bg-zinc-950/95 backdrop-blur-2xl" />
+                        <div className="absolute inset-0 dot-bg opacity-30" />
 
-                        <div className="absolute right-0 top-0 bottom-0 w-72 bg-white shadow-2xl flex flex-col pt-24 px-6 space-y-2 border-l border-gray-200">
-                            {navLinks.map((link) => (
-                                <Link
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ duration: 0.3, delay: 0.05 }}
+                            className="flex flex-col items-center justify-center h-full gap-6 px-8"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {navLinks.map((link, i) => (
+                                <motion.a
                                     key={link.name}
-                                    to={link.to}
-                                    onClick={() => setIsOpen(false)}
-                                    className={`block px-4 py-3 rounded-xl text-lg font-medium transition-colors cursor-pointer ${
-                                        location.pathname === link.to
-                                            ? "text-white bg-gradient-to-r from-blue-600 to-purple-600"
-                                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                                    href={link.href}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 10 }}
+                                    transition={{ delay: i * 0.06 }}
+                                    onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                                    className={`text-4xl font-heading font-bold tracking-tight transition-all cursor-pointer ${
+                                        activeSection === link.href.slice(1)
+                                            ? "text-gradient"
+                                            : "text-zinc-500 hover:text-zinc-100"
                                     }`}
                                 >
                                     {link.name}
-                                </Link>
+                                </motion.a>
                             ))}
-                        </div>
+                            <motion.a
+                                href="/cv.pdf"
+                                download
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: navLinks.length * 0.06 }}
+                                className="mt-6 btn-primary text-lg px-8 py-3.5"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <span>Download CV</span>
+                            </motion.a>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
