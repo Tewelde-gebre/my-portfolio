@@ -55,7 +55,7 @@ const Hero = ({ profileImage, onImageUpdate }) => {
     const socials = [
         { icon: <FaGithub size={18} />, href: "https://github.com/Tewelde-gebre", label: "GitHub" },
         { icon: <FaLinkedin size={18} />, href: "#", label: "LinkedIn" },
-        { icon: <FaTelegram size={18} />, href: "#", label: "Telegram" },
+        { icon: <FaTelegram size={18} />, href: "https://t.me/Tegew", label: "Telegram" },
     ];
 
     const stats = [
@@ -157,8 +157,9 @@ const Hero = ({ profileImage, onImageUpdate }) => {
                         >
                             I build end-to-end web applications using the{" "}
                             <span className="text-purple-400 font-semibold">MERN Stack</span>{" "}
-                            — MongoDB, Express, React &amp; Node.js. Software Engineering student at{" "}
-                            <span className="text-purple-400 font-semibold">Mekelle University</span>,
+                            — MongoDB, Express, React &amp; Node.js. With degrees in{" "}
+                            <span className="text-purple-400 font-semibold">Software Engineering</span> &amp;{" "}
+                            <span className="text-purple-400 font-semibold">Business Management</span>,
                             crafting fast, scalable, and beautiful full-stack experiences.
                         </motion.p>
 
@@ -297,8 +298,8 @@ const Hero = ({ profileImage, onImageUpdate }) => {
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                                 className="absolute -bottom-6 -left-2 md:-left-8 glass-card-nohover px-4 py-3 shadow-xl z-20 hidden md:block"
                             >
-                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-0.5">University</p>
-                                <p className="text-sm font-bold text-white font-heading">Mekelle Univ.</p>
+                                <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-0.5">Degrees</p>
+                                <p className="text-sm font-bold text-white font-heading">Software Engineering & Business Management</p>
                             </motion.div>
 
                             <input

@@ -111,8 +111,9 @@ const About = () => {
 
                             <div className="space-y-4">
                                 <p className="text-zinc-400 leading-relaxed">
-                                    I am a Software Engineering student at{" "}
-                                    <span className="text-purple-400 font-semibold">Mekelle University</span>,
+                                    I hold degrees in{" "}
+                                    <span className="text-purple-400 font-semibold">Software Engineering</span>{" "}and{" "}
+                                    <span className="text-purple-400 font-semibold">Business Management</span>,
                                     dedicated to building scalable and efficient web applications.
                                     With expertise in both frontend and backend technologies, I enjoy
                                     solving complex problems and creating user-friendly experiences.

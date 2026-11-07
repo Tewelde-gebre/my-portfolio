@@ -2,11 +2,11 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }) => {
   const THEME_KEY = "portfolio_theme";
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem(THEME_KEY);
-    return saved || "light";
+    return saved || "dark";
   });
 
   useEffect(() => {
@@ -25,3 +25,5 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+export default ThemeProvider;

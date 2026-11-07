@@ -11,6 +11,7 @@ import CustomCursor from "./components/CustomCursor";
 import ScrollProgress from "./components/ScrollProgress";
 import ThemeProvider from "./components/ThemeProvider";
 function App() {
+  console.log('App component rendered');
   const STORAGE_KEY = "portfolio_profile_image";
   const [profileImage, setProfileImage] = useState(() => {
     try {

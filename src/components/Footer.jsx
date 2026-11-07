@@ -44,7 +44,7 @@ const Footer = () => {
                         {[
                             { icon: <FaGithub size={18} />, href: "https://github.com/Tewelde-gebre", label: "GitHub" },
                             { icon: <FaLinkedin size={18} />, href: "#", label: "LinkedIn" },
-                            { icon: <FaTelegram size={18} />, href: "#", label: "Telegram" },
+                            { icon: <FaTelegram size={18} />, href: "https://t.me/Tegew", label: "Telegram" },
                         ].map((s) => (
                             <MagneticWrapper key={s.label}>
                                 <motion.a

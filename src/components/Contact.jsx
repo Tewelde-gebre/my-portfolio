@@ -214,10 +214,16 @@ const Contact = () => {
                 body:    data,
             });
 
+            if (!res.ok) {
+                throw new Error(`Server responded with ${res.status}`);
+            }
+
             const json = await res.json();
             if (json.success === "true" || json.success === true) {
                 setStatus("success");
                 handleClear();
+            } else if (json.message && json.message.toLowerCase().includes("activation")) {
+                setStatus("activation");
             } else {
                 throw new Error(json.message || "Submission failed");
             }
@@ -243,7 +249,7 @@ const Contact = () => {
     const socials = [
         { icon: <FaGithub   size={18} />, href: "https://github.com/Tewelde-gebre", label: "GitHub"   },
         { icon: <FaLinkedin size={18} />, href: "#",                                 label: "LinkedIn" },
-        { icon: <FaTelegram size={18} />, href: "#",                                 label: "Telegram" },
+        { icon: <FaTelegram size={18} />, href: "https://t.me/Tegew",                                 label: "Telegram" },
     ];
 
     const msgLen = formData.message.length;
@@ -465,6 +471,45 @@ const Contact = () => {
                                         <p style={{ color: "#71717a", fontSize: "0.875rem", maxWidth: "20rem" }}>
                                             Your message has been sent directly to my inbox. I'll get back to you soon!
                                         </p>
+                                        <button onClick={() => setStatus("")}
+                                            className="btn-primary"
+                                            style={{ marginTop: "1rem", padding: "0.65rem 1.5rem", fontSize: "0.875rem" }}>
+                                            Send Another Message
+                                        </button>
+                                    </motion.div>
+
+                                ) : status === "activation" ? (
+
+                                    /* ─ One-Time Activation ─ */
+                                    <motion.div key="activation"
+                                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                                        style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "3rem 1rem", textAlign: "center", gap: "1rem", position: "relative", zIndex: 10 }}>
+                                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, delay: 0.1 }}>
+                                            <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(168, 85, 247, 0.15)", border: "2px solid #a855f7", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", color: "#c084fc" }}>
+                                                <FaEnvelope size={28} />
+                                            </div>
+                                        </motion.div>
+                                        <h3 style={{ fontSize: "1.4rem", fontWeight: 700, color: "#fff" }}>Activation Required (One-Time)</h3>
+                                        <p style={{ color: "#d4d4d8", fontSize: "0.9rem", maxWidth: "26rem", lineHeight: 1.7 }}>
+                                            FormSubmit sent a confirmation email to <strong style={{ color: "#c084fc" }}>{FORMSUBMIT_EMAIL}</strong>.
+                                        </p>
+                                        <p style={{ color: "#a1a1aa", fontSize: "0.825rem", maxWidth: "24rem", lineHeight: 1.6 }}>
+                                            Please check your Gmail inbox (or Spam folder) and click <strong>"Activate Form"</strong>. Once activated, all messages will arrive directly in your inbox!
+                                        </p>
+                                        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center", marginTop: "0.5rem" }}>
+                                            <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: "0.65rem 1.25rem", fontSize: "0.875rem", textDecoration: "none" }}>
+                                                Open Gmail
+                                            </a>
+                                            <button onClick={() => setStatus("")}
+                                                style={{
+                                                    padding: "0.65rem 1.25rem", fontSize: "0.875rem",
+                                                    borderRadius: "0.875rem", border: "1px solid rgba(255,255,255,0.15)",
+                                                    background: "transparent", color: "#d4d4d8", cursor: "pointer",
+                                                    fontFamily: "inherit",
+                                                }}>
+                                                Back to Form
+                                            </button>
+                                        </div>
                                     </motion.div>
 
                                 ) : status === "error" ? (

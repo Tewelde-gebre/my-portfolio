@@ -21,7 +21,7 @@ const skillCategories = [
         emoji: "🗄️",
         color: "#f59e0b",
         bentoClass: "md:col-span-1 md:row-span-1",
-        items: ["MongoDB", "Mongoose", "PostgreSQL", "Redis"],
+        items: ["MongoDB", "Mongoose", "PostgreSQL",],
     },
     {
         category: "Mobile",
